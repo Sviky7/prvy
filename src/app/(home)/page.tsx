@@ -1,22 +1,15 @@
-// src/app/page.tsx
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "../api/auth/[...nextauth]/authOptions"
+import AuthHomeView from "@/components/AuthHomeView"
+import NonAuthHomeView from "@/components/NonAuthHomeView"
 
+export const metadata = { title: "Domov | ZoškaSnap" }
 
-import Typography from "@mui/material/Typography";
+export default async function HomePage() {
+  const session = await getServerSession(authOptions)
 
-export const metadata = { title: "Domov | ZoškaSnap" };
-
-export default function Home() {
-
-  return (
-
-      <Typography> Domovská stránka </Typography>
-
-  );
+  return session ? <AuthHomeView /> : <NonAuthHomeView />
 }
-
-
-
-
 
 
 
