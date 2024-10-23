@@ -9,12 +9,11 @@ import PersonIcon from '@mui/icons-material/Person'
 import PostAddIcon from '@mui/icons-material/PostAdd'
 import LoginIcon from '@mui/icons-material/Login'
 import LogoutIcon from '@mui/icons-material/Logout'
-import AppRegistrationIcon from '@mui/icons-material/AppRegistration'
 import Link from 'next/link'
 
 export default function NavBar() {
   const [value, setValue] = React.useState('Domov')
-  const { data: session, status } = useSession()
+  const { data: session } = useSession()
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue)
@@ -53,13 +52,13 @@ export default function NavBar() {
         component={Link}
         href="/prispevok"
       />
-      {status === 'authenticated' ? (
+      {session  ? (
         <BottomNavigationAction
           label="Odhlásenie"
           value="Odhlasenie"
           icon={<LogoutIcon />}
           component={Link}
-          href="/auth/signout"
+          href="/auth/odhlasenie"
         />
       ) : (
           <BottomNavigationAction

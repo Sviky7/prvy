@@ -35,7 +35,7 @@ export default function SignInPage() {
       if (result?.error) {
         setError('Invalid email or password')
       } else {
-        router.push('/dashboard')
+        router.push('/')
       }
     } catch (err) {
       setError('An error occurred. Please try again.')
@@ -43,7 +43,7 @@ export default function SignInPage() {
   }
 
   const handleGoogleSignIn = () => {
-    signIn('google', { callbackUrl: '/dashboard' })
+    signIn('google', { callbackUrl: '/' })
   }
 
   return (
@@ -98,11 +98,6 @@ export default function SignInPage() {
             Sign in with Google
           </Button>
         </CardContent>
-        <CardActions>
-          <Typography variant="body2" color="text.secondary" align="center" sx={{ width: '100%' }}>
-            Don't have an account? <a href="/signup">Sign Up</a>
-          </Typography>
-        </CardActions>
       </Card>
     </Box>
   )
