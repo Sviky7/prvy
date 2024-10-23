@@ -62,7 +62,6 @@ export default function NavBar() {
           href="/auth/signout"
         />
       ) : (
-        <>
           <BottomNavigationAction
             label="Prihlásenie"
             value="Prihlasenie"
@@ -70,14 +69,7 @@ export default function NavBar() {
             component={Link}
             href="/auth/prihlasenie"
           />
-          <BottomNavigationAction
-            label="Registrácia"
-            value="Registracia"
-            icon={<AppRegistrationIcon />}
-            component={Link}
-            href="/auth/registracia"
-          />
-        </>
+        
       )}
     </BottomNavigation>
   )

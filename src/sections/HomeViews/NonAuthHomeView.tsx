@@ -1,8 +1,9 @@
+import { Typography } from '@mui/material'
 export default function NonAuthHomeView() {
     return (
-      <div>
-        <h1>Welcome to ZoškaSnap</h1>
+      <>
+        <Typography>Welcome to ZoškaSnap</Typography>
         {/* Add your non-authenticated user content here */}
-      </div>
+      </>
     )
   }
