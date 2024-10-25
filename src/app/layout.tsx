@@ -23,8 +23,8 @@ export default function RootLayout({
             <main style={{ flexGrow: 1 }}>
               {children}
             </main>
-          </div>
           <Navbar /> 
+          </div>
         </AuthProvider>
       </body>
     </html>
