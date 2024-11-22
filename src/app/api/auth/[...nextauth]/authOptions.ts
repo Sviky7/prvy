@@ -14,6 +14,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
+  // debug: true, // Enable/disable detailed logging
   pages: {
     signIn: "/auth/prihlasenie",
     signOut: "/auth/odhlasenie",
@@ -21,8 +22,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
       // Redirect to home page after sign-in
-      return baseUrl || url;
+      return baseUrl || url; // baseUrl is automatically set from NEXTAUTH_URL in .env
     },
   },
 };
-
