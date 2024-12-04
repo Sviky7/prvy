@@ -1,27 +1,23 @@
-import { getServerSession } from "next-auth/next"
-import { authOptions } from "../api/auth/[...nextauth]/authOptions"
-import AuthHomeView from "@/sections/HomeViews/AuthHomeView"
-import NonAuthHomeView from "@/sections/HomeViews/NonAuthHomeView"
-import { Suspense } from "react"
+import { Suspense } from "react";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../api/auth/[...nextauth]/authOptions";
+import NonAuthHomeView from "@/sections/HomeViews/NonAuthHomeView";
+import HomeLoader from "@/components/Loader";
 
-export const metadata = { title: "Domov | ZoškaSnap" }
+export const metadata = { title: "Domov | ZoškaSnap" };
 
 export default async function HomePage() {
-  const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions);
+  session ? redirect("/prispevok") : null;
 
-  return(
-    <>
-    <Suspense fallback={<div>Loading...</div>}>
-    {session ? <AuthHomeView/> : <NonAuthHomeView/> }
+  return (
+    // todo loading component
+    <Suspense fallback={<HomeLoader />}>
+      <NonAuthHomeView />
     </Suspense>
-    </>
-  )
+  );
 }
-
-
-
-
-  
 
 
 
