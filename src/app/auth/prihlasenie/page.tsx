@@ -1,19 +1,30 @@
-// src/app/auth/prihlasenie/page.tsx
+"use client";
 
-import { Container, Typography, Box, Paper } from "@mui/material";
+import React, { useState } from 'react';
+import { Container, Typography, Box, Paper, Button } from "@mui/material";
 import PrihlasenieButton from "@/components/prihlasenie/PrihlasenieButton";
 import PrihlasenieDiscordButton from "@/components/prihlasenie/PrihlasenieDiscordButton";
-//import PrihlasenieSpotifyButton from "@/components/prihlasenie/PrihlasenieSpotifyButton";
+import LoginModal from "@/components/LoginModal";
+import DiscordIcon from '@/components/prihlasenie/DiscordIcon';
 
 export default function Prihlasenie() {
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
+  const handleOpenLoginModal = () => {
+    setIsLoginModalOpen(true);
+  };
+
+  const handleCloseLoginModal = () => {
+    setIsLoginModalOpen(false);
+  };
+
   return (
     <Box
       sx={{
-        minHeight: "calc(100vh - 56px)", // Adjusting for the navbar height (56px is the typical height for BottomNavigation)
+        minHeight: "calc(100vh - 56px)",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        // backgroundColor: "#f0f4f8",
       }}
     >
       <Container component="main" maxWidth="xs">
@@ -24,7 +35,6 @@ export default function Prihlasenie() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            // backgroundColor: "#ffffff",
             borderRadius: 3,
           }}
         >
@@ -32,14 +42,23 @@ export default function Prihlasenie() {
             Prihlásenie
           </Typography>
           <PrihlasenieButton />
-          
           <PrihlasenieDiscordButton />
-          
+          <Button
+            variant="outlined"
+            color="primary"
+            fullWidth
+            onClick={handleOpenLoginModal}
+            sx={{ mt: 2 }}
+          >
+            Ešte nemáš účet registuj sa
+          </Button>
+          <LoginModal open={isLoginModalOpen} onClose={handleCloseLoginModal} />
         </Paper>
       </Container>
     </Box>
   );
 }
+
 
 // future
 // // src/app/auth/prihlasenie/page.tsx

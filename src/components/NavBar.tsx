@@ -75,13 +75,7 @@ export default function NavBar() {
             value: "O nas",
             icon: <PersonIcon />,
             href: "/o-nas",
-          },
-          {
-            label: "GDPR",
-            value: "GDPR",
-            icon: <PostAddIcon />,
-            href: "/gdpr",
-          },
+          },        
           {
             label: "Prihlasenie",
             value: "Prihlasenie",
