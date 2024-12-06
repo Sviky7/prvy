@@ -5,7 +5,8 @@ import { Container, Typography, Box, Paper, Button } from "@mui/material";
 import PrihlasenieButton from "@/components/prihlasenie/PrihlasenieButton";
 import PrihlasenieDiscordButton from "@/components/prihlasenie/PrihlasenieDiscordButton";
 import LoginModal from "@/components/LoginModal";
-import DiscordIcon from '@/components/prihlasenie/DiscordIcon';
+
+
 
 export default function Prihlasenie() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
