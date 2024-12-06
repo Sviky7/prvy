@@ -75,16 +75,16 @@ export default function NavBar() {
             value: "O nas",
             icon: <PersonIcon />,
             href: "/o-nas",
-          },        
+          },    
+          {
+            label: "Profil",
+            value: "Profil",
+            icon: <PersonIcon />,
+            href: "/profil",
+          }  ,  
           {
             label: "Prihlasenie",
             value: "Prihlasenie",
-            icon: <LoginIcon />,
-            href: "/auth/prihlasenie",
-          },
-          {
-            label: "Registracia",
-            value: "Registracia",
             icon: <LoginIcon />,
             href: "/auth/prihlasenie",
           },
