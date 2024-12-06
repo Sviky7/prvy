@@ -57,13 +57,14 @@ export default function LogoutModal({ open, onClose }: LogoutModalProps) {
             onClick={handleGoogleSignIn}
             startIcon={<GoogleIcon/>}
             sx={{
-              py: 1.5,
-              borderColor: "divider",
-              color: "text.primary",
-              "&:hover": {
-                borderColor: "primary.main",
-                backgroundColor: "action.hover",
-              },
+            marginTop: 3,
+            backgroundColor: "#4285F4",
+            color: "#fff",
+            "&:hover": { backgroundColor: "#357ae8" },
+            borderRadius: 2,
+            padding: "10px 20px",
+            textTransform: "none",
+              
             }}
           >
             Registrovať sa cez Google
@@ -76,16 +77,16 @@ export default function LogoutModal({ open, onClose }: LogoutModalProps) {
                 <DiscordIcon/>
             }
             sx={{
-              py: 1.5,
-              borderColor: "#5865F2",
-              color: "#5865F2",
-              "&:hover": {
-                borderColor: "#5865F2",
-                backgroundColor: "rgba(88, 101, 242, 0.08)",
-              },
+                marginTop: 3,
+                backgroundColor: "#852eff",
+                color: "#fff",
+                "&:hover": { backgroundColor: "#6a1ed4" },
+                borderRadius: 2,
+                padding: "10px 20px",
+                textTransform: "none",
             }}
           >
-            Registrovať sa cez Discord
+            Registovať sa cez Discord
           </Button>
         </Stack>
       </DialogContent>

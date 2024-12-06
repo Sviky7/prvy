@@ -14,6 +14,7 @@ import { useSession } from "next-auth/react";
 import LogoutModal from "./LogoutModal";
 import { IconButton } from "@mui/material";
 
+import Avatar from "@mui/material/Avatar";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 
@@ -61,6 +62,21 @@ export default function NavBar() {
             value: "Prispevok",
             icon: <PostAddIcon />,
             href: "/prispevok/novy",
+          },
+          {
+            label: "Profil",
+            value: "/profil",
+            href: "/profil",
+            icon: session?.user?.image ? (
+              <Avatar
+                alt={session?.user?.name || "User"}
+                src={session?.user?.image || undefined}/>
+              ) : (
+                <Avatar>{session?.user?.name?.charAt(0) || "U"}</Avatar>
+              ),  
+
+
+            
           },
           {
             label: "Odhlasenie",
