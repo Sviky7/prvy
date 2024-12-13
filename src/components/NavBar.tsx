@@ -112,7 +112,7 @@ export default function NavBar() {
       <BottomNavigation
         sx={{
           maxWidth: "100%",
-          width: 800,
+          width: 1000,
           margin: "0 auto",
           justifyContent: "center",
         }}

@@ -103,7 +103,7 @@ export default function LogoutModal({ open, onClose }: LogoutModalProps) {
         >
           Zrušiť
         </Button>
-      </DialogActions>
+      </DialogActions>  
     </Dialog>
   );
 }

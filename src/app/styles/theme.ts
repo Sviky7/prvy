@@ -42,8 +42,8 @@ const darkTheme = createTheme({
     primary: { main: "#f44336" }, // Darker red
     secondary: { main: "#2196f3" }, // Lighter blue
     background: {
-      // default: "#121212", // Dark background
-      // paper: "#1e1e1e", // Dark paper
+      default: "#000", // Dark background
+      paper: "#0a0a0a", // Dark paper
     },
     text: {
       // primary: "#ffffff", // White text in dark mode
