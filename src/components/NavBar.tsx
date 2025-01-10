@@ -140,7 +140,6 @@ export default function NavBar() {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
-        sx={{ mt: -2 }}
         anchorOrigin={{
           vertical: "top",
           horizontal:"center"
@@ -149,6 +148,7 @@ export default function NavBar() {
           vertical: "bottom",
           horizontal: "center",
         }}
+        disableScrollLock={true}
       >
         <MenuItem component={Link} href="/profil" onClick={() => setAnchorEl(null)}>
           <ListItemIcon><PersonIcon fontSize="small" /></ListItemIcon>
