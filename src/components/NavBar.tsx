@@ -1,106 +1,98 @@
 "use client";
 
 import * as React from "react";
-import BottomNavigation from "@mui/material/BottomNavigation";
-import BottomNavigationAction from "@mui/material/BottomNavigationAction";
+import {
+  BottomNavigation,
+  BottomNavigationAction,
+  Avatar,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  // useMediaQuery,
+  // Theme,
+  Typography,
+  Divider,
+} from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import PersonIcon from "@mui/icons-material/Person";
 import PostAddIcon from "@mui/icons-material/PostAdd";
 import LoginIcon from "@mui/icons-material/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SearchIcon from "@mui/icons-material/Search";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import SecurityIcon from "@mui/icons-material/Security";
+import { useTheme } from "@/components/providers/ThemeProvider";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import LogoutModal from "./LogoutModal";
-import { IconButton } from "@mui/material";
 
-import Avatar from "@mui/material/Avatar";
-import LightModeIcon from "@mui/icons-material/LightMode";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-
-import { useTheme } from "@/components/providers/ThemeProvider";
 import { useEffect } from "react";
 
 export default function NavBar() {
-  const [value, setValue] = React.useState("Domov");
-  const { data: session } = useSession();
-  const [logoutModalOpen, setLogoutModalOpen] = React.useState(false);
-  const { toggleTheme, isDarkMode } = useTheme();
-
   const [mounted, setMounted] = React.useState(false);
+  const { data: session } = useSession();
+  const { toggleTheme, isDarkMode } = useTheme();
+  // const isMobile = useMediaQuery((theme: Theme) =>
+  //   theme.breakpoints.down("sm")
+  // );
+  // temporary don't use mobile nav
+  const isMobile = false;
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [logoutModalOpen, setLogoutModalOpen] = React.useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
-    return null;
-  }
-
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
-  };
-
-  const handleLogoutClick = () => {
-    setLogoutModalOpen(!logoutModalOpen);
-  };
+  if (!mounted) return null;
 
   const navItems = [
-    { label: "Domov", value: "Domov", icon: <HomeIcon />, href: "/" },
+    {
+      label: "Domov",
+      icon: <HomeIcon />,
+      href: session ? "/prispevok" : "/",
+    },
     ...(session
       ? [
           {
             label: "Hladat",
-            value: "Hladat",
             icon: <SearchIcon />,
-            onClick: () => {
-              // Implement search functionality
-            },
+            href: "/hladat",
           },
           {
             label: "Pridat",
-            value: "Prispevok",
             icon: <PostAddIcon />,
             href: "/prispevok/novy",
           },
           {
             label: "Profil",
-            value: "/profil",
-            href: "/profil",
-            icon: session?.user?.image ? (
+            icon: session.user?.image ? (
               <Avatar
-                alt={session?.user?.name || "User"}
-                src={session?.user?.image || undefined}/>
-              ) : (
-                <Avatar>{session?.user?.name?.charAt(0) || "U"}</Avatar>
-              ),  
-
-
-            
-          },
-          {
-            label: "Odhlasenie",
-            value: "Odhlasenie",
-            icon: <LogoutIcon />,
-            onClick: handleLogoutClick,
+                sx={{ height: 35, width: 35 }}
+                alt={session.user.name || "User"}
+                src={session.user.image}
+              />
+            ) : (
+              <Avatar>{session.user?.name?.charAt(0) || "U"}</Avatar>
+            ),
+            onClick: (e: React.MouseEvent<HTMLElement>) => setAnchorEl(e.currentTarget),
           },
         ]
       : [
           {
             label: "O nas",
-            value: "O nas",
             icon: <PersonIcon />,
             href: "/o-nas",
-          },    
+          },
           {
-            label: "Profil",
-            value: "Profil",
-            icon: <PersonIcon />,
-            href: "/profil",
-          }  ,  
+            label: "GDPR",
+            icon: <SecurityIcon />,
+            href: "/gdpr",
+          },
           {
-            label: "Prihlasenie",
-            value: "Prihlasenie",
+            label: "Registracia",
             icon: <LoginIcon />,
             href: "/auth/prihlasenie",
           },
@@ -109,37 +101,76 @@ export default function NavBar() {
 
   return (
     <>
-      <BottomNavigation
-        sx={{
-          maxWidth: "100%",
-          width: 1000,
-          margin: "0 auto",
-          justifyContent: "center",
-        }}
-        value={value}
-        onChange={handleChange}
-        showLabels
-      >
-        {navItems.map((item) => (
-          <BottomNavigationAction
-            key={item.value}
-            label={item.label}
-            value={item.value}
-            icon={item.icon}
-            component={item.href ? Link : "button"}
-            href={item.href || undefined}
-            onClick={item.onClick}
-            showLabel
-          />
-        ))}
-        <IconButton
-          onClick={toggleTheme}
-          sx={{ color: (theme) => theme.palette.text.primary, ml: 2 }}
+      {isMobile ? (
+        null
+      ) : (
+        <BottomNavigation
+          showLabels
+          sx={{
+            position: "fixed",
+            bottom: "24px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            maxWidth: 800,
+            minWidth: "40%",
+            borderRadius: "16px",
+            backdropFilter: "blur(10px)",
+            backgroundColor: isDarkMode ? "rgba(30, 30, 30, 0.6)" : "rgba(255, 255, 255, 0.6)",
+            boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
+            zIndex: 1000,
+          }}
         >
-          {isDarkMode ? <DarkModeIcon /> : <LightModeIcon />}
-        </IconButton>
-      </BottomNavigation>
-      <LogoutModal open={logoutModalOpen} onClose={handleLogoutClick} />
+          {navItems.map((item, index) => (
+            <BottomNavigationAction
+              key={index}
+              label={item.label}
+              icon={item.icon}
+              component={item.href ? Link : "button"}
+              href={item.href}
+              onClick={item.onClick}
+              sx={{
+                "&:hover": { transform: "scale(1.05)" },
+              }}
+            />
+          ))}
+        </BottomNavigation>
+      )}
+
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={() => setAnchorEl(null)}
+        sx={{ mt: -2 }}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal:"center"
+        }}
+        transformOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+      >
+        <MenuItem component={Link} href="/profil" onClick={() => setAnchorEl(null)}>
+          <ListItemIcon><PersonIcon fontSize="small" /></ListItemIcon>
+          <ListItemText>Profil</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={toggleTheme}>
+          <ListItemIcon>
+            {isDarkMode ? <DarkModeIcon fontSize="small" /> : <LightModeIcon fontSize="small" />}
+          </ListItemIcon>
+          <Typography>{isDarkMode ? "Tmavý režim" : "Svetlý režim"}</Typography>
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={() => {
+          setAnchorEl(null);
+          setLogoutModalOpen(true);
+        }}>
+          <ListItemIcon><LogoutIcon fontSize="small" /></ListItemIcon>
+          <ListItemText>Odhlasenie</ListItemText>
+        </MenuItem>
+      </Menu>
+
+      <LogoutModal open={logoutModalOpen} onClose={() => setLogoutModalOpen(false)} />
     </>
   );
 }
