@@ -24,7 +24,7 @@ const lightTheme = createTheme({
     primary: { main: "#dc004e" }, // Red
     secondary: { main: "#1976d2" }, // Blue
     background: {
-      default: "#fafafa", // Light gray
+      default: "#ffffff", // Light gray
       paper: "#ffffff", // White
     },
     text: {
