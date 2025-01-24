@@ -3,7 +3,8 @@
 import { Typography, Container, Grid2 } from "@mui/material";
 import PostCard from "./_components/PostCard";
 import EmptyPosts from "./_components/EmptyPosts";
-import { useAPICall } from "@/hooks/useApiCall";
+import { getPosts } from "./actions";
+import { Suspense } from "react";
 import LoadingPosts from "./_components/PostCardLoader";
 
 type Post = {
@@ -19,26 +20,25 @@ type Post = {
   };
 };
 
-export default function Prispevky() {
-  const {
-    data: dataJson,
-    isLoading,
-    isError,
-  } = useAPICall(["posts"], async () => {
-    const response = await fetch(`/api/posts`);
+async function PostsList() {
+  const posts = await getPosts();
 
-    if (!response.ok) {
-      throw new Error("Nastala chyba pri nacitavani dát");
-    }
-    return response.json();
-  });
-
-  if (isError) {
-    return <Typography color="error">Nastala necakana chyba</Typography>;
+  if (posts.length === 0) {
+    return <EmptyPosts />;
   }
 
-  const posts: Post[] = dataJson || [];
+  return (
+    <Grid2 container spacing={3} direction="column">
+      {posts.map((post: Post) => (
+        <Grid2 key={post.id}>
+          <PostCard post={post} />
+        </Grid2>
+      ))}
+    </Grid2>
+  );
+}
 
+export default function Prispevky() {
   return (
     <Container maxWidth="sm" sx={{ py: 4 }}>
       <Typography
@@ -49,23 +49,17 @@ export default function Prispevky() {
       >
         Príspevky
       </Typography>
-      {isLoading ? (
-        <Grid2 container spacing={3} direction="column">
-          {Array.from({ length: 3 }).map((_, index) => (
-            <LoadingPosts key={index} />
-          ))}
-        </Grid2>
-      ) : posts.length > 0 ? (
-        <Grid2 container spacing={3} direction="column">
-          {posts.map((post: Post) => (
-            <Grid2 key={post.id}>
-              <PostCard post={post} />
-            </Grid2>
-          ))}
-        </Grid2>
-      ) : (
-        <EmptyPosts />
-      )}
+      <Suspense
+        fallback={
+          <Grid2 container spacing={3} direction="column">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <LoadingPosts key={index} />
+            ))}
+          </Grid2>
+        }
+      >
+        <PostsList />
+      </Suspense>
     </Container>
   );
 }

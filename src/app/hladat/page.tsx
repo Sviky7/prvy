@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { useAPICall } from "@/hooks/useApiCall";
+import { useState, useCallback, useTransition } from "react";
 import debounce from "lodash/debounce";
 import { Container, List, TextField, Typography } from "@mui/material";
 import ProfileListSkeleton from "./components/ProfileSkeletonLoader";
 import SearchCard from "./components/SearchCard";
+import { searchProfiles } from "./actions";
 
 interface Profile {
   id: string;
@@ -18,34 +18,27 @@ interface Profile {
 
 export default function OptimizedInstagramStyleSearch() {
   const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
-
-  const {
-    data: dataJson,
-    isLoading,
-    isError,
-  } = useAPICall(
-    ["profiles", debouncedSearch],
-    async () => {
-      if (!debouncedSearch || debouncedSearch.length < 3) return [];
-      const response = await fetch(
-        `/api/profile/${encodeURIComponent(debouncedSearch)}`
-      );
-
-      if (!response.ok) {
-        throw new Error("Nastala chyba pri nacitavani dát");
-      }
-      return response.json();
-    },
-    {
-      enabled: debouncedSearch.length >= 3,
-    }
-  );
+  const [searchResults, setSearchResults] = useState<Profile[]>([]);
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedSetSearch = useCallback(
+  const debouncedSearch = useCallback(
     debounce((value: string) => {
-      setDebouncedSearch(value);
+      startTransition(async () => {
+        try {
+          if (value.length >= 3) {
+            const results = await searchProfiles(value);
+            setSearchResults(results);
+            setError(null);
+          } else {
+            setSearchResults([]);
+          }
+        } catch (err) {
+          setError("Nastala chyba pri vyhľadávaní");
+          setSearchResults([]);
+        }
+      });
     }, 300),
     []
   );
@@ -53,11 +46,11 @@ export default function OptimizedInstagramStyleSearch() {
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearch(value);
-    debouncedSetSearch(value);
+    debouncedSearch(value);
   };
 
-  if (isError) {
-    return <Typography color="error">Nastala necakana chyba</Typography>;
+  if (error) {
+    return <Typography color="error">{error}</Typography>;
   }
 
   return (
@@ -75,13 +68,13 @@ export default function OptimizedInstagramStyleSearch() {
       />
       {search.length < 3 ? (
         <Typography>Zadajte aspoň 3 znaky pre vyhľadávanie</Typography>
-      ) : isLoading ? (
+      ) : isPending ? (
         <ProfileListSkeleton />
-      ) : dataJson?.length === 0 ? (
+      ) : searchResults.length === 0 ? (
         <Typography>Žiadne výsledky</Typography>
       ) : (
         <List sx={{ width: "100%" }}>
-          {dataJson?.map((profile: Profile) => (
+          {searchResults.map((profile: Profile) => (
             <SearchCard key={profile.id} profile={profile} />
           ))}
         </List>
