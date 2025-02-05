@@ -27,8 +27,8 @@ import { useTheme } from "@/components/providers/ThemeProvider";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import LogoutModal from "./LogoutModal";
-
 import { useEffect } from "react";
+
 
 export default function NavBar() {
   const [mounted, setMounted] = React.useState(false);
@@ -89,7 +89,7 @@ export default function NavBar() {
           {
             label: "GDPR",
             icon: <SecurityIcon />,
-            href: "/gdpr",
+            href: "/GDPR",
           },
           {
             label: "Registracia",
