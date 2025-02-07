@@ -1,19 +1,32 @@
-
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
 
-export const metadata = { title: "Podmienky | ZoškaSnap" };
+export const metadata = { title: "GDPR | ZoškaSnap" };
 
-export default function TermsConditions() {
-
+export default function GDPRPolicy() {
   return (
-    <Container>
-        <Typography variant="h4" sx={{ textAlign: "center" }}>
-            GDPR
+    <Container maxWidth="md">
+      <Box sx={{ my: 4 }}>
+        <Typography variant="h4" component="h1" gutterBottom sx={{ textAlign: "center" }}>
+          GDPR Zásady
         </Typography>
-        <Typography variant="body1" sx={{ textAlign: "center" }}>
-            Pre účely správy vašich údajov, naše stránky vyžadujú žiadne informácie o vašom zariadení. Všetky údaje, ktoré sa nachádzate na stránke, sú anonymné a nie sú uložené na serveri.
+        <Typography variant="body1" paragraph>
+          V ZoškaSnap sa zaväzujeme chrániť vaše súkromie a osobné údaje. Naše zásady GDPR zabezpečujú, že:
         </Typography>
+        <Typography component="ul" sx={{ pl: 4 }}>
+          <li>Zhromažďujeme iba údaje nevyhnutné pre fungovanie našej služby.</li>
+          <li>Vaše osobné informácie sú spracúvané zákonne, spravodlivo a transparentne.</li>
+          <li>Implementujeme vhodné technické a organizačné opatrenia na zabezpečenie bezpečnosti údajov.</li>
+          <li>Máte právo kedykoľvek pristupovať k svojim osobným údajom, opraviť ich alebo vymazať.</li>
+        </Typography>
+        <Typography variant="body1" paragraph sx={{ mt: 2 }}>
+          Na našich serveroch neukladáme žiadne osobné informácie. Všetky údaje sú anonymizované a používajú sa výlučne na zlepšenie používateľskej skúsenosti.
+        </Typography>
+        <Typography variant="body1">
+          Pre viac informácií o vašich právach podľa GDPR alebo o našich postupoch pri spracovaní údajov nás prosím kontaktujte.
+        </Typography>
+      </Box>
     </Container>
   );
 }

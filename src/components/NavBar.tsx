@@ -92,7 +92,7 @@ export default function NavBar() {
             href: "/GDPR",
           },
           {
-            label: "Registracia",
+            label: "Prihlasenie",
             icon: <LoginIcon />,
             href: "/auth/prihlasenie",
           },

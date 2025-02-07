@@ -54,7 +54,7 @@ export default function Prihlasenie() {
           </Button>
           <LoginModal open={isLoginModalOpen} onClose={handleCloseLoginModal} />
           <Typography variant="caption" sx={{ mt: 2, textAlign: 'center' }}>
-            Registráciou súhlasite s{' '}
+            Prihlásením súhlasite s{' '}
             <NextLink href="/podmienky" passHref>
               <Link sx={{ color: 'text.secondary' }}>
                 obchodnými podmienkami
