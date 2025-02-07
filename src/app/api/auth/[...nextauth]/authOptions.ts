@@ -24,12 +24,46 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
-  // debug: true, // Enable/disable detailed logging
   pages: {
     signIn: "/auth/prihlasenie",
     signOut: "/auth/odhlasenie",
   },
   callbacks: {
+    async signIn({ user, account, profile }) {
+      if (account && profile && user) {
+        // Check if user with this email already exists
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email! },
+          include: { accounts: true },
+        });
+
+        if (existingUser) {
+          // If user exists but doesn't have an account with this provider
+          const existingAccount = existingUser.accounts.find(
+            (acc) => acc.provider === account.provider
+          );
+
+          if (!existingAccount) {
+            // Link the new account to the existing user
+            await prisma.account.create({
+              data: {
+                userId: existingUser.id,
+                type: account.type,
+                provider: account.provider,
+                providerAccountId: account.providerAccountId,
+                access_token: account.access_token,
+                expires_at: account.expires_at,
+                token_type: account.token_type,
+                scope: account.scope,
+                id_token: account.id_token,
+                refresh_token: account.refresh_token,
+              },
+            });
+          }
+        }
+      }
+      return true;
+    },
     async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
       // Redirect to home page after sign-in
       return baseUrl || url; // baseUrl is automatically set from NEXTAUTH_URL in .env
