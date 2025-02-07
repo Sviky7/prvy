@@ -3,10 +3,24 @@
 import { signIn } from "next-auth/react";
 import { Button } from "@mui/material";
 import { Google as GoogleIcon } from "@mui/icons-material";
-export default function PrihlasenieButton() {
-  const handleGoogleSignIn = () => {
+
+export default function PrihlasenieButton({ 
+  text, 
+  onClick 
+}: { 
+  text?: string;
+  onClick?: (e: React.MouseEvent) => boolean | void;
+}) {
+  const handleGoogleSignIn = async (e: React.MouseEvent) => {
+    if (onClick) {
+      const shouldContinue = onClick(e);
+      if (shouldContinue === false) {
+        return;
+      }
+    }
     signIn("google", { callbackUrl: "/" });
   };
+
   return (
     <Button
       fullWidth
@@ -23,7 +37,7 @@ export default function PrihlasenieButton() {
         textTransform: "none",
       }}
     >
-      Prihlásiť sa cez Google
+    Registrovať sa cez Google
     </Button>
   );
 }

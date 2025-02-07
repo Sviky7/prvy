@@ -119,4 +119,3 @@ export default function LogoutModal({ open, onClose }: LogoutModalProps) {
     </StyledDialog>
   )
 }
-

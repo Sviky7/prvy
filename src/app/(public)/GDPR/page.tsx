@@ -1,6 +1,7 @@
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
+import BackButton from "@/components/BackButton";
 
 export const metadata = { title: "GDPR | ZoškaSnap" };
 
@@ -8,6 +9,7 @@ export default function GDPRPolicy() {
   return (
     <Container maxWidth="md">
       <Box sx={{ my: 4 }}>
+        <BackButton />
         <Typography variant="h4" component="h1" gutterBottom sx={{ textAlign: "center" }}>
           GDPR Zásady
         </Typography>
