@@ -1,12 +1,11 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Container, Typography, Box, Paper, Button } from "@mui/material";
+import { Container, Typography, Box, Paper, Button, Link } from "@mui/material";
+import NextLink from 'next/link';
 import PrihlasenieButton from "@/components/prihlasenie/PrihlasenieButton";
 import PrihlasenieDiscordButton from "@/components/prihlasenie/PrihlasenieDiscordButton";
 import LoginModal from "@/components/LoginModal";
-
-
 
 export default function Prihlasenie() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -54,6 +53,18 @@ export default function Prihlasenie() {
             Ešte nemáš účet registuj sa
           </Button>
           <LoginModal open={isLoginModalOpen} onClose={handleCloseLoginModal} />
+          <Typography variant="caption" sx={{ mt: 2, textAlign: 'center' }}>
+            Registráciou súhlasite s{' '}
+            <NextLink href="/podmienky" passHref>
+              <Link sx={{ color: 'text.secondary' }}>
+                obchodnými podmienkami
+              </Link>
+            </NextLink>{' '}
+            a{' '}
+            <NextLink href="/GDPR" passHref>
+              <Link sx={{ color: 'text.secondary' }}>GDPR</Link>
+            </NextLink>
+          </Typography>
         </Paper>
       </Container>
     </Box>
