@@ -32,11 +32,9 @@ export default function Prihlasenie() {
   }
 
   const AuthButtons = ({
-    text,
     checkTerms,
     termsAccepted,
   }: {
-    text: string
     checkTerms?: boolean
     termsAccepted?: boolean
   }) => {
@@ -52,10 +50,10 @@ export default function Prihlasenie() {
     return (
       <>
         <Box sx={{ width: "100%" }}>
-          <PrihlasenieButton text={text} onClick={handleClick} />
+          <PrihlasenieButton onClick={handleClick} />
         </Box>
         <Box sx={{ width: "100%", marginTop: 1 }}>
-          <PrihlasenieDiscordButton text={text} onClick={handleClick} />
+          <PrihlasenieDiscordButton onClick={handleClick} />
         </Box>
       </>
     )
@@ -84,7 +82,7 @@ export default function Prihlasenie() {
           <Typography component="h1" variant="h4" gutterBottom>
             Registrácia
           </Typography>
-          <AuthButtons text="Registrovať" checkTerms={true} termsAccepted={termsAccepted} />
+          <AuthButtons checkTerms={true} termsAccepted={termsAccepted} />
           <br/>
           <FormControlLabel
             control={<Checkbox checked={termsAccepted} onChange={handleTermsChange} />}
@@ -145,7 +143,7 @@ export default function Prihlasenie() {
           <Typography id="modal-modal-title" variant="h6" component="h2" gutterBottom>
             Prihlásenie
           </Typography>
-          <AuthButtons text="Prihlásiť" />
+          <AuthButtons termsAccepted={termsAccepted} />
         </Box>
       </Modal>
 

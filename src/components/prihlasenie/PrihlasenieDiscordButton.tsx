@@ -8,7 +8,7 @@ export default function PrihlasenieDiscordButton({
    
   onClick 
 }: { 
-  text?: string;
+  
   onClick?: (e: React.MouseEvent) => void;
 }) {
   const handleDiscordSignIn = (e: React.MouseEvent) => {
