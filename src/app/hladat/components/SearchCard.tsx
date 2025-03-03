@@ -5,6 +5,7 @@ import {
     ListItemText,
     Typography,
   } from "@mui/material";
+import Link from "next/link";
   
   interface Profile {
     id: string;
@@ -17,10 +18,11 @@ import {
   
   export default function SearchCard({ profile }: { profile: Profile }) {
     return (
+      <Link href={`/profil/${profile.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
       <ListItem
         key={profile.id}
         alignItems="flex-start"
-        sx={{ mb: 2, backgroundColor: "background.paper" }}
+        sx={{ mb: 2, backgroundColor: "background.paper", cursor: 'pointer', '&:hover': { backgroundColor: 'action.hover' } }}
       >
         <ListItemAvatar>
           <Avatar
@@ -43,6 +45,8 @@ import {
           }
           sx={{ ml: 2 }}
         />
+      
       </ListItem>
+      </Link>
     );
   }
