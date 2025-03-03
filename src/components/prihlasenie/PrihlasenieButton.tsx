@@ -5,9 +5,10 @@ import { Button } from "@mui/material";
 import { Google as GoogleIcon } from "@mui/icons-material";
 
 export default function PrihlasenieButton({ 
+  text,
   onClick 
 }: { 
-  
+  text: string;
   onClick?: (e: React.MouseEvent) => boolean | void;
 }) {
   const handleGoogleSignIn = async (e: React.MouseEvent) => {
@@ -36,7 +37,7 @@ export default function PrihlasenieButton({
         textTransform: "none",
       }}
     >
-    Registrovať sa cez Google
+    {text} sa cez Google
     </Button>
   );
 }

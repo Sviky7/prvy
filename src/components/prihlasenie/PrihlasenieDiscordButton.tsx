@@ -5,10 +5,10 @@ import { Button } from "@mui/material";
 import DiscordIcon from "@/components/prihlasenie/DiscordIcon";
 
 export default function PrihlasenieDiscordButton({ 
-   
+   text,
   onClick 
 }: { 
-  
+  text: string;
   onClick?: (e: React.MouseEvent) => void;
 }) {
   const handleDiscordSignIn = (e: React.MouseEvent) => {
@@ -32,7 +32,7 @@ export default function PrihlasenieDiscordButton({
         textTransform: "none",
       }}
     >
-       Registrovať sa cez Discord
+        {text} sa cez Discord
     </Button>
   );
 }

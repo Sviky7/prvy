@@ -1,6 +1,5 @@
 'use client'
 
-
 import { signIn } from 'next-auth/react'
 import { Google as GoogleIcon } from '@mui/icons-material'
 import {
@@ -17,7 +16,7 @@ import { styled } from '@mui/material/styles'
 import Link from 'next/link'
 import DiscordIcon from './prihlasenie/DiscordIcon'
 
-interface LogoutModalProps {
+interface LoginModalProps {
   open: boolean
   onClose: () => void
 }
@@ -51,19 +50,19 @@ const DiscordButton = styled(StyledButton)({
   '&:hover': { backgroundColor: '#6a1ed4' },
 })
 
-export default function LogoutModal({ open, onClose }: LogoutModalProps) {
-  const handleGoogleSignIn = () => {
-    signIn('google', { callbackUrl: '/' })
+export default function LoginModal({ open, onClose }: LoginModalProps) {
+  const handleGoogleSignIn = async () => {
+    await signIn('google', { callbackUrl: '/' })
   }
 
-  const handleDiscordSignIn = () => {
-    signIn('discord', { callbackUrl: '/' })
+  const handleDiscordSignIn = async () => {
+    await signIn('discord', { callbackUrl: '/' })
   }
 
   return (
     <StyledDialog fullWidth open={open} onClose={onClose}>
       <DialogTitle sx={{ fontWeight: 600, textAlign: 'center' }}>
-        Registrácia
+        Prihlasenie
       </DialogTitle>
       <DialogContent sx={{ py: 2 }}>
         <Stack spacing={2} sx={{ width: '100%' }}>
@@ -73,7 +72,7 @@ export default function LogoutModal({ open, onClose }: LogoutModalProps) {
             onClick={handleGoogleSignIn}
             startIcon={<GoogleIcon />}
           >
-            Registrovať sa cez Google
+            Prihlasenie sa cez Google
           </GoogleButton>
           <DiscordButton
             fullWidth
@@ -81,7 +80,7 @@ export default function LogoutModal({ open, onClose }: LogoutModalProps) {
             onClick={handleDiscordSignIn}
             startIcon={<DiscordIcon />}
           >
-            Registovať sa cez Discord
+            Prihlasenie sa cez Discord
           </DiscordButton>
         </Stack>
       </DialogContent>
@@ -94,14 +93,14 @@ export default function LogoutModal({ open, onClose }: LogoutModalProps) {
           color: 'text.secondary',
         }}
       >
-        Registráciou súhlasite s{' '}
+        Prihlásením súhlasite s{' '}
         <Link href="/podmienky" passHref>
           <MuiLink sx={{ color: 'text.secondary' }}>
             obchodnými podmienkami
           </MuiLink>
         </Link>{' '}
         a{' '}
-        <Link href="/GDPR" passHref>
+        <Link href="\GDPR" passHref>
           <MuiLink sx={{ color: 'text.secondary' }}>GDPR</MuiLink>
         </Link>
       </Typography>

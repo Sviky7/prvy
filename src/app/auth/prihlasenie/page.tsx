@@ -34,9 +34,11 @@ export default function Prihlasenie() {
   const AuthButtons = ({
     checkTerms,
     termsAccepted,
+    text,
   }: {
     checkTerms?: boolean
     termsAccepted?: boolean
+    text: string;
   }) => {
     const handleClick = (e: React.MouseEvent) => {
       if (checkTerms && !termsAccepted) {
@@ -50,10 +52,10 @@ export default function Prihlasenie() {
     return (
       <>
         <Box sx={{ width: "100%" }}>
-          <PrihlasenieButton onClick={handleClick} />
+          <PrihlasenieButton text={text} onClick={handleClick} />
         </Box>
         <Box sx={{ width: "100%", marginTop: 1 }}>
-          <PrihlasenieDiscordButton onClick={handleClick} />
+          <PrihlasenieDiscordButton text={text} onClick={handleClick} />
         </Box>
       </>
     )
@@ -82,7 +84,7 @@ export default function Prihlasenie() {
           <Typography component="h1" variant="h4" gutterBottom>
             Registrácia
           </Typography>
-          <AuthButtons checkTerms={true} termsAccepted={termsAccepted} />
+            <AuthButtons text="Registrácia" checkTerms={true} termsAccepted={termsAccepted} />
           <br/>
           <FormControlLabel
             control={<Checkbox checked={termsAccepted} onChange={handleTermsChange} />}
@@ -93,29 +95,29 @@ export default function Prihlasenie() {
                   obchodnými podmienkami
                 </MuiLink>{" "}
                 a{" "}
-                <MuiLink component={Link} href="/gdpr" sx={{ color: "text.secondary" }}>
+                <MuiLink component={Link} href="/GDPR" sx={{ color: "text.secondary" }}>
                   GDPR
                 </MuiLink>
               </Typography>
             }
             sx={{ mt: 1 }}
           />
-          <Box sx={{ marginTop: 4, width: "100%" }}>
-            <Button
-              sx={{
-                width: "100%",
-                textDecoration: "underline",
+        <Box sx={{ marginTop: 4, width: "100%" }}>
+          <Button
+            sx={{
+              width: "100%",
+              textDecoration: "underline",
+              backgroundColor: "none",
+              "&:hover": {
                 backgroundColor: "none",
-                "&:hover": {
-                  backgroundColor: "none",
-                  textDecoration: "underline",
-                },
-              }}
-              onClick={handleOpen}
-            >
-              Už mám účet
-            </Button>
-          </Box>
+                textDecoration: "underline",
+              },
+            }}
+            onClick={handleOpen}
+          >
+            Už mám účet
+          </Button>
+        </Box>
         </Paper>
       </Container>
 
@@ -124,32 +126,87 @@ export default function Prihlasenie() {
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-        sx={{ maxWidth: "100%" }}
+        sx={{ 
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
       >
         <Box
           sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: "100%",
+            width: "90%",
             maxWidth: 400,
-            bgcolor: "background.default",
-            boxShadow: 24,
-            p: 4,
+            bgcolor: "background.paper",
             borderRadius: 3,
+            boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
+            p: { xs: 3, sm: 4 },
+            position: "relative",
+            outline: "none",
+            border: "1px solid rgba(0,0,0,0.08)"
           }}
         >
-          <Typography id="modal-modal-title" variant="h6" component="h2" gutterBottom>
+          <Typography 
+            id="modal-modal-title" 
+            variant="h5" 
+            component="h2" 
+            gutterBottom
+            sx={{
+              fontWeight: 600,
+              color: 'text.secondary',
+              mb: 3,
+              textAlign: 'center'
+            }}
+          >
             Prihlásenie
           </Typography>
-          <AuthButtons termsAccepted={termsAccepted} />
+
+          <Box sx={{ mb: 3 }}>
+            <AuthButtons text="Prihlásiť sa" checkTerms={false} termsAccepted={true} />
+          </Box>
+
+          <Typography 
+            variant="body2" 
+            sx={{ 
+              color: 'text.secondary',
+              textAlign: 'center',
+              mt: 2
+            }}
+          >
+            Prihlásením súhlasíte s{" "}
+            <MuiLink 
+              component={Link} 
+              href="/podmienky" 
+              sx={{ 
+                color: 'text.secondary',
+                textDecoration: 'none',
+                '&:hover': {
+                  textDecoration: 'underline'
+                }
+              }}
+            >
+              obchodnými podmienkami
+            </MuiLink>{" "}
+            a{" "}
+            <MuiLink 
+              component={Link} 
+              href="/gdpr" 
+              sx={{ 
+                color: 'text.secondary',
+                textDecoration: 'none',
+                '&:hover': {
+                  textDecoration: 'underline'
+                }
+              }}
+            >
+              GDPR
+            </MuiLink>
+          </Typography>
         </Box>
       </Modal>
 
-      <Snackbar
-        open={showAlert}
-        autoHideDuration={6000}
+      <Snackbar 
+        open={showAlert} 
+        autoHideDuration={6000} 
         onClose={handleAlertClose}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
