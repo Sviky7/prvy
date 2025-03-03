@@ -2,7 +2,8 @@
 
 
 import { getProfile } from "@/app/hladat/actions";
-import { Avatar, Box, Container, Paper, Typography, Grid, ImageList, ImageListItem } from "@mui/material";
+import { Avatar, Box, Container, Paper, Typography, Grid } from "@mui/material";
+import Image from "next/image";
 
 export const metadata = { title: "Detail profilu | ZoškaSnap" };
 
@@ -66,17 +67,14 @@ export default async function ProfileDetail({
           {profile.user.posts.map((post) => (
             <Grid item xs={12} sm={6} md={4} key={post.id}>
               <Paper sx={{ p: 2 }}>
-                <img
-                  src={post.imageUrl}
-                  alt={post.caption || "Príspevok"}
-                  style={{
-                    width: '100%',
-                    height: '200px',
-                    objectFit: 'cover',
-                    borderRadius: '4px',
-                    marginBottom: '8px'
-                  }}
-                />
+                <Box position="relative" width="100%" height="200px" mb={1}>
+                  <Image
+                    src={post.imageUrl}
+                    alt={post.caption || "Príspevok"}
+                    fill
+                    style={{ objectFit: 'cover', borderRadius: '4px' }}
+                  />
+                </Box>
                 {post.caption && (
                   <Typography variant="body2" sx={{ mb: 1 }}>
                     {post.caption}
