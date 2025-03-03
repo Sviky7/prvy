@@ -24,6 +24,9 @@ export default async function ProfileDetail({
 }) {
   const profile = await getProfile(params.id);
 
+  // Debug log
+  console.log('Posts:', profile.user.posts);
+
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
       <Paper sx={{ p: 4, mb: 4 }}>
@@ -68,12 +71,31 @@ export default async function ProfileDetail({
             <Grid item xs={12} sm={6} md={4} key={post.id}>
               <Paper sx={{ p: 2 }}>
                 <Box position="relative" width="100%" height="200px" mb={1}>
-                  <Image
-                    src={post.imageUrl}
-                    alt={post.caption || "Príspevok"}
-                    fill
-                    style={{ objectFit: 'cover', borderRadius: '4px' }}
-                  />
+                  {post.imageUrl ? (
+                    <Image
+                      src={post.imageUrl}
+                      alt={post.caption || "Príspevok"}
+                      fill
+                      style={{ objectFit: 'cover', borderRadius: '4px' }}
+                      sizes="(max-width: 600px) 100vw, (max-width: 960px) 50vw, 33vw"
+                    />
+                  ) : (
+                    <Box
+                      sx={{
+                        width: '100%',
+                        height: '100%',
+                        backgroundColor: 'grey.200',
+                        borderRadius: '4px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                    >
+                      <Typography color="text.secondary">
+                        Žiadny obrázok
+                      </Typography>
+                    </Box>
+                  )}
                 </Box>
                 {post.caption && (
                   <Typography variant="body2" sx={{ mb: 1 }}>
@@ -84,7 +106,7 @@ export default async function ProfileDetail({
                   {formatDate(new Date(post.createdAt))}
                 </Typography>
               </Paper>
-            </Grid> 
+            </Grid>
           ))}
         </Grid>
       )}
