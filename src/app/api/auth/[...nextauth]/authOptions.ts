@@ -29,12 +29,18 @@ export const authOptions: NextAuthOptions = {
     signOut: "/auth/odhlasenie",
   },
   callbacks: {
+    async session({ session, user }) {
+      if (session.user) {
+        session.user.id = user.id;
+      }
+      return session;
+    },
     async signIn({ user, account, profile }) {
       if (account && profile && user) {
         // Check if user with this email already exists
         const existingUser = await prisma.user.findUnique({
           where: { email: user.email! },
-          include: { accounts: true },
+          include: { accounts: true, profile: true },
         });
 
         if (existingUser) {
@@ -57,6 +63,31 @@ export const authOptions: NextAuthOptions = {
                 scope: account.scope,
                 id_token: account.id_token,
                 refresh_token: account.refresh_token,
+              },
+            });
+          }
+
+          // Create profile if it doesn't exist
+          if (!existingUser.profile) {
+            await prisma.profile.create({
+              data: {
+                userId: existingUser.id,
+                avatarUrl: user.image || null,
+              },
+            });
+          }
+        } else {
+          // For new users, create their profile automatically
+          const newUser = await prisma.user.findUnique({
+            where: { email: user.email! },
+            include: { profile: true },
+          });
+          
+          if (newUser && !newUser.profile) {
+            await prisma.profile.create({
+              data: {
+                userId: newUser.id,
+                avatarUrl: user.image || null,
               },
             });
           }

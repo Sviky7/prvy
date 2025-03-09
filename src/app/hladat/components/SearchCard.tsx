@@ -9,6 +9,7 @@ import Link from "next/link";
   
   interface Profile {
     id: string;
+    userId: string;
     user: {
       name: string | null;
     };
@@ -18,7 +19,7 @@ import Link from "next/link";
   
   export default function SearchCard({ profile }: { profile: Profile }) {
     return (
-      <Link href={`/profil/${profile.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+      <Link href={`/profil/${profile.userId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
       <ListItem
         key={profile.id}
         alignItems="flex-start"

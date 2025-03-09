@@ -23,6 +23,7 @@ export async function searchProfiles(query: string) {
                 id: true,
                 avatarUrl: true,
                 bio: true,
+                userId: true,
                 user: {
                     select: {
                         name: true
@@ -42,7 +43,7 @@ export async function searchProfiles(query: string) {
 export async function getProfile(id: string) {
     try {
         const profile = await prisma.profile.findUnique({
-            where: { id },
+            where: { userId: id },
             select: {
                 id: true,
                 avatarUrl: true,

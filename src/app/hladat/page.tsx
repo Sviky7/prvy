@@ -9,6 +9,7 @@ import { searchProfiles } from "./actions";
 
 interface Profile {
   id: string;
+  userId: string;
   user: {
     name: string | null;
   };

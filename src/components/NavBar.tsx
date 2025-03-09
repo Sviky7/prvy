@@ -144,7 +144,7 @@ export default function NavBar() {
         }}
         disableScrollLock={true}
       >
-        <MenuItem component={Link} href="/profil" onClick={() => setAnchorEl(null)}>
+        <MenuItem component={Link} href={`/profil/${session?.user?.id}`} onClick={() => setAnchorEl(null)}>
           <ListItemIcon><PersonIcon fontSize="small" /></ListItemIcon>
           <ListItemText>Profil</ListItemText>
         </MenuItem>
