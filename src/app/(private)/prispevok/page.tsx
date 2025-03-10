@@ -1,41 +1,25 @@
-"use client";
-
-import { Typography, Container, Grid2 } from "@mui/material";
+import { Container, Grid, Typography } from "@mui/material";
 import PostCard from "./_components/PostCard";
 import EmptyPosts from "./_components/EmptyPosts";
-import { getPosts } from "./actions";
 import { Suspense } from "react";
 import LoadingPosts from "./_components/PostCardLoader";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
+import prisma from "@/lib/prisma";
 
-type Post = {
+interface Post {
   id: string;
-  userId: string;
   imageUrl: string;
   caption: string | null;
   createdAt: Date;
-  updatedAt: Date;
+  isLiked: boolean;
+  likesCount: number;
+  commentsCount: number;
   user: {
-    name: string | null;
-    image: string | null;
+    id: string;
+    name: string;
+    avatarUrl: string;
   };
-};
-
-async function PostsList() {
-  const posts = await getPosts();
-
-  if (posts.length === 0) {
-    return <EmptyPosts />;
-  }
-
-  return (
-    <Grid2 container spacing={3} direction="column">
-      {posts.map((post: Post) => (
-        <Grid2 key={post.id}>
-          <PostCard post={post} />
-        </Grid2>
-      ))}
-    </Grid2>
-  );
 }
 
 export default function Prispevky() {
@@ -49,17 +33,83 @@ export default function Prispevky() {
       >
         Príspevky
       </Typography>
-      <Suspense
-        fallback={
-          <Grid2 container spacing={3} direction="column">
-            {Array.from({ length: 3 }).map((_, index) => (
-              <LoadingPosts key={index} />
-            ))}
-          </Grid2>
-        }
-      >
+      <Suspense fallback={<LoadingPosts />}>
         <PostsList />
       </Suspense>
     </Container>
+  );
+}
+
+async function PostsList() {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return (
+      <Typography color="error" textAlign="center">
+        Pre zobrazenie príspevkov sa musíte prihlásiť
+      </Typography>
+    );
+  }
+
+  const posts = await prisma.post.findMany({
+    orderBy: {
+      createdAt: 'desc'
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          profile: {
+            select: {
+              avatarUrl: true
+            }
+          }
+        }
+      },
+      _count: {
+        select: {
+          likes: true,
+          comments: true
+        }
+      },
+      likes: {
+        where: {
+          userId: session.user.id
+        },
+        take: 1,
+        select: {
+          id: true
+        }
+      }
+    }
+  });
+
+  const transformedPosts: Post[] = posts.map(post => ({
+    id: post.id,
+    imageUrl: post.imageUrl,
+    caption: post.caption,
+    createdAt: post.createdAt,
+    isLiked: post.likes.length > 0,
+    likesCount: post._count.likes,
+    commentsCount: post._count.comments,
+    user: {
+      id: post.user.id,
+      name: post.user.name || '',
+      avatarUrl: post.user.profile?.avatarUrl || ''
+    }
+  }));
+
+  if (!transformedPosts.length) {
+    return <EmptyPosts />;
+  }
+
+  return (
+    <Grid container spacing={3}>
+      {transformedPosts.map((post) => (
+        <Grid item xs={12} key={post.id}>
+          <PostCard post={post} />
+        </Grid>
+      ))}
+    </Grid>
   );
 }

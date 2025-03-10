@@ -2,32 +2,40 @@ import React from "react";
 import {
   Card,
   CardContent,
+  CardActions,
   Typography,
   Box,
   Skeleton,
-  Grid2,
+  Grid,
 } from "@mui/material";
 
 const PostCardLoader: React.FC = () => {
   return (
-    <Card sx={{ borderRadius: 3, boxShadow: 3, height: "100%" }}>
+    <Card sx={{ maxWidth: "100%", borderRadius: 2, mb: 2 }}>
       <Box sx={{ display: "flex", alignItems: "center", p: 2 }}>
         <Skeleton variant="circular" width={40} height={40} sx={{ mr: 2 }} />
-        <Skeleton variant="text" width="60%" />
+        <Skeleton variant="text" width={120} />
       </Box>
-      <Skeleton variant="rectangular" height={400} />
-      <CardContent>
-        <Typography variant="body1" sx={{ mb: 1 }}>
-          <Skeleton variant="text" width="40%" />
-          <Skeleton variant="text" width="60%" sx={{ mt: 1 }} />
-        </Typography>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ fontSize: "0.75rem", mt: 1 }}
-        >
-          <Skeleton variant="text" width="30%" />
-        </Typography>
+      <Skeleton 
+        variant="rectangular" 
+        height={400}
+        sx={{ 
+          width: "100%",
+          backgroundColor: "#f5f5f5"
+        }}
+      />
+      <CardActions sx={{ px: 2, py: 1 }}>
+        <Skeleton variant="circular" width={24} height={24} sx={{ mr: 1 }} />
+        <Skeleton variant="text" width={40} sx={{ mr: 2 }} />
+        <Skeleton variant="circular" width={24} height={24} sx={{ mr: 1 }} />
+        <Skeleton variant="text" width={60} />
+      </CardActions>
+      <CardContent sx={{ pt: 0 }}>
+        <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+          <Skeleton variant="text" width={100} sx={{ mr: 1 }} />
+          <Skeleton variant="text" width="60%" />
+        </Box>
+        <Skeleton variant="text" width={120} />
       </CardContent>
     </Card>
   );
@@ -35,13 +43,13 @@ const PostCardLoader: React.FC = () => {
 
 const LoadingPosts = () => {
   return (
-    <Grid2 container spacing={3} direction="column">
+    <Grid container spacing={3}>
       {Array.from({ length: 3 }).map((_, index) => (
-        <Grid2 key={index}>
+        <Grid item xs={12} key={index}>
           <PostCardLoader />
-        </Grid2>
+        </Grid>
       ))}
-    </Grid2>
+    </Grid>
   );
 };
 

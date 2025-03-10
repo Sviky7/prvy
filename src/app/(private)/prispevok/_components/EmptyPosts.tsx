@@ -1,14 +1,14 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Paper } from "@mui/material";
 
 export default function EmptyPosts() {
   return (
-    <Box sx={{ maxWidth: 500, mx: "auto", my: 4 }}>
-      <Typography variant="h4" sx={{ mb: 3, textAlign: "center" }}>
-        Príspevky
+    <Paper sx={{ p: 4, textAlign: 'center', borderRadius: 2, mb: 2 }}>
+      <Typography variant="h6" color="text.secondary" gutterBottom>
+        Zatiaľ tu nie sú žiadne príspevky
       </Typography>
-      <Typography variant="body1" sx={{ textAlign: "center" }}>
-        Žiadne príspevky na zobrazenie.
+      <Typography color="text.secondary">
+        Pridajte nový príspevok alebo sledujte ďalších používateľov.
       </Typography>
-    </Box>
+    </Paper>
   );
 }

@@ -1,53 +1,73 @@
+"use client";
+
 import {
-    Avatar,
-    ListItem,
-    ListItemAvatar,
-    ListItemText,
-    Typography,
-  } from "@mui/material";
+  Avatar,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Typography,
+} from "@mui/material";
 import Link from "next/link";
-  
-  interface Profile {
+
+interface Profile {
+  id: string;
+  user: {
     id: string;
-    userId: string;
-    user: {
-      name: string | null;
-    };
-    avatarUrl?: string | null;
-    bio?: string | null;
-  }
-  
-  export default function SearchCard({ profile }: { profile: Profile }) {
-    return (
-      <Link href={`/profil/${profile.userId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-      <ListItem
-        key={profile.id}
-        alignItems="flex-start"
-        sx={{ mb: 2, backgroundColor: "background.paper", cursor: 'pointer', '&:hover': { backgroundColor: 'action.hover' } }}
-      >
-        <ListItemAvatar>
-          <Avatar
-            alt={profile.user.name || "Používateľ"}
-            src={profile.avatarUrl || undefined}
-            sx={{ width: 56, height: 56 }}
-          />
-        </ListItemAvatar>
-        <ListItemText
-          primary={profile.user.name}
-          secondary={
-            <Typography
-              sx={{ display: "inline" }}
-              component="span"
-              variant="body2"
-              color="text.primary"
-            >
-              {profile.bio}
-            </Typography>
-          }
-          sx={{ ml: 2 }}
-        />
-      
-      </ListItem>
-      </Link>
-    );
-  }
+    name: string | null;
+    email: string;
+  };
+  avatarUrl: string | null | undefined;
+  bio: string | null | undefined;
+  location: string | null | undefined;
+}
+
+export default function SearchCard({ profile }: { profile: Profile }) {
+  return (
+    <ListItem
+      component={Link}
+      href={`/profil/${profile.user.id}`}
+      sx={{
+        borderRadius: 2,
+        mb: 1,
+        "&:hover": {
+          backgroundColor: "action.hover",
+        },
+      }}
+    >
+      <ListItemAvatar>
+        <Avatar src={profile.avatarUrl || undefined} alt={profile.user.name || "User"} />
+      </ListItemAvatar>
+      <ListItemText
+        primary={profile.user.name || "Používateľ"}
+        secondary={
+          <>
+            {profile.bio && (
+              <Typography
+                component="span"
+                variant="body2"
+                color="text.primary"
+                sx={{
+                  display: "block",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {profile.bio}
+              </Typography>
+            )}
+            {profile.location && (
+              <Typography
+                component="span"
+                variant="body2"
+                color="text.secondary"
+              >
+                {profile.location}
+              </Typography>
+            )}
+          </>
+        }
+      />
+    </ListItem>
+  );
+}

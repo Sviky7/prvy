@@ -1,20 +1,21 @@
 "use client";
 
-import { useState, useCallback, useTransition } from "react";
+import { useState, useCallback, useTransition, useEffect } from "react";
 import debounce from "lodash/debounce";
 import { Container, List, TextField, Typography } from "@mui/material";
 import ProfileListSkeleton from "./components/ProfileSkeletonLoader";
 import SearchCard from "./components/SearchCard";
-import { searchProfiles } from "./actions";
 
 interface Profile {
   id: string;
-  userId: string;
   user: {
+    id: string;
     name: string | null;
+    email: string;
   };
-  avatarUrl?: string | null;
-  bio?: string | null;
+  avatarUrl: string | null | undefined;
+  bio: string | null | undefined;
+  location: string | null | undefined;
 }
 
 export default function OptimizedInstagramStyleSearch() {
@@ -23,22 +24,33 @@ export default function OptimizedInstagramStyleSearch() {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
+  const fetchProfiles = async (value: string) => {
+    try {
+      const response = await fetch(`/api/profile/search?query=${encodeURIComponent(value)}`);
+      if (!response.ok) {
+        throw new Error("Nastala chyba pri vyhľadávaní");
+      }
+      const results = await response.json();
+      setSearchResults(results);
+      setError(null);
+    } catch (err) {
+      setError("Nastala chyba pri vyhľadávaní");
+      setSearchResults([]);
+    }
+  };
+
+  // Load all profiles initially
+  useEffect(() => {
+    startTransition(() => {
+      fetchProfiles("");
+    });
+  }, []);
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSearch = useCallback(
     debounce((value: string) => {
-      startTransition(async () => {
-        try {
-          if (value.length >= 3) {
-            const results = await searchProfiles(value);
-            setSearchResults(results);
-            setError(null);
-          } else {
-            setSearchResults([]);
-          }
-        } catch (err) {
-          setError("Nastala chyba pri vyhľadávaní");
-          setSearchResults([]);
-        }
+      startTransition(() => {
+        fetchProfiles(value);
       });
     }, 300),
     []
@@ -50,14 +62,10 @@ export default function OptimizedInstagramStyleSearch() {
     debouncedSearch(value);
   };
 
-  if (error) {
-    return <Typography color="error">{error}</Typography>;
-  }
-
   return (
     <Container maxWidth="sm" sx={{ mt: 4 }}>
       <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 3 }}>
-        Hladaj
+        Hľadať
       </Typography>
       <TextField
         fullWidth
@@ -67,15 +75,15 @@ export default function OptimizedInstagramStyleSearch() {
         onChange={handleSearchChange}
         sx={{ mb: 3 }}
       />
-      {search.length < 3 ? (
-        <Typography>Zadajte aspoň 3 znaky pre vyhľadávanie</Typography>
-      ) : isPending ? (
+      {isPending ? (
         <ProfileListSkeleton />
+      ) : error ? (
+        <Typography color="error">{error}</Typography>
       ) : searchResults.length === 0 ? (
         <Typography>Žiadne výsledky</Typography>
       ) : (
         <List sx={{ width: "100%" }}>
-          {searchResults.map((profile: Profile) => (
+          {searchResults.map((profile) => (
             <SearchCard key={profile.id} profile={profile} />
           ))}
         </List>
