@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 import prisma from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 
 export async function POST(
   request: Request,
@@ -29,7 +30,7 @@ export async function POST(
 
     return NextResponse.json(like);
   } catch (error) {
-    if ((error as any).code === 'P2002') {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
       return NextResponse.json(
         { error: "Already liked" },
         { status: 400 }

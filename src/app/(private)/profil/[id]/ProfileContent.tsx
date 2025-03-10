@@ -7,7 +7,6 @@ import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import { useState } from 'react';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PostCard from '@/app/(private)/prispevok/_components/PostCard';
-import { useSession } from "next-auth/react";
 
 interface Profile {
   user: {
@@ -36,16 +35,6 @@ interface Profile {
 interface ProfileContentProps {
   profile: Profile;
   isOwnProfile: boolean;
-}
-
-function formatDate(date: Date) {
-  return date.toLocaleDateString('sk-SK', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  });
 }
 
 function EditProfileButton({ profile }: { profile: Profile }) {
@@ -195,76 +184,62 @@ function FollowButton({ profile, isFollowing }: { profile: Profile; isFollowing:
 }
 
 export default function ProfileContent({ profile, isOwnProfile }: ProfileContentProps) {
-  const { data: session } = useSession();
-
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
-      <Paper sx={{ p: 4, mb: 4, position: 'relative' }}>
+      <Paper sx={{ p: 3, position: 'relative' }}>
         {isOwnProfile && <EditProfileButton profile={profile} />}
-        <Box display="flex" alignItems="center" mb={4}>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
           <Avatar
-            alt={profile.user.name || "Používateľ"}
             src={profile.avatarUrl || undefined}
-            sx={{ width: 120, height: 120, mr: 4 }}
+            alt={profile.user.name || 'Profile'}
+            sx={{ width: 120, height: 120, mr: 3 }}
           />
           <Box>
-            <Box display="flex" alignItems="center">
-              <Typography variant="h4" gutterBottom>
-                {profile.user.name}
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Typography variant="h5" component="h1">
+                {profile.user.name || 'Používateľ'}
               </Typography>
               {!isOwnProfile && (
                 <FollowButton profile={profile} isFollowing={profile.user.isFollowing} />
               )}
             </Box>
-            <Typography variant="body1" color="text.secondary">
-              {profile.user.email}
-            </Typography>
-            <Box display="flex" gap={2} mt={1}>
-              <Typography variant="body2" color="text.secondary">
+            <Box sx={{ display: 'flex', gap: 3, mt: 1 }}>
+              <Typography>
+                <strong>{profile.user.posts.length}</strong> príspevkov
+              </Typography>
+              <Typography>
                 <strong>{profile.user.followersCount}</strong> sledovateľov
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography>
                 <strong>{profile.user.followingCount}</strong> sledovaných
               </Typography>
             </Box>
+            {profile.bio && (
+              <Typography sx={{ mt: 2 }}>{profile.bio}</Typography>
+            )}
             {profile.location && (
-              <Typography 
-                variant="body2" 
-                color="text.secondary" 
-                sx={{ mt: 1, display: 'flex', alignItems: 'center', gap: 0.5 }}
-              >
-                <LocationOnIcon fontSize="small" />
-                {profile.location}
-              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+                <LocationOnIcon sx={{ fontSize: 16, mr: 0.5 }} />
+                <Typography variant="body2">{profile.location}</Typography>
+              </Box>
             )}
           </Box>
         </Box>
-        {profile.bio && (
-          <Box mt={2}>
-            <Typography variant="h6" gutterBottom>
-              O mne
-            </Typography>
-            <Typography variant="body1">{profile.bio}</Typography>
-          </Box>
-        )}
+        <Grid container spacing={2}>
+          {profile.user.posts.map((post) => (
+            <Grid item xs={12} key={post.id}>
+              <PostCard post={{ 
+                ...post, 
+                user: { 
+                  id: profile.user.id, 
+                  name: profile.user.name || '', 
+                  avatarUrl: profile.avatarUrl || '' 
+                } 
+              }} />
+            </Grid>
+          ))}
+        </Grid>
       </Paper>
-
-      <Grid container spacing={2}>
-        {profile.user.posts.map((post) => (
-          <Grid item xs={12} key={post.id}>
-            <PostCard 
-              post={{
-                ...post,
-                user: {
-                  id: profile.user.id,
-                  name: profile.user.name || '',
-                  avatarUrl: profile.avatarUrl || ''
-                }
-              }}
-            />
-          </Grid>
-        ))}
-      </Grid>
     </Container>
   );
 }
