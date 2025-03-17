@@ -13,6 +13,7 @@ interface Post {
   caption: string | null;
   createdAt: Date;
   isLiked: boolean;
+  isSaved: boolean;
   likesCount: number;
   commentsCount: number;
   user: {
@@ -80,6 +81,15 @@ async function PostsList() {
         select: {
           id: true
         }
+      },
+      saves: {
+        where: {
+          userId: session.user.id
+        },
+        take: 1,
+        select: {
+          id: true
+        }
       }
     }
   });
@@ -90,6 +100,7 @@ async function PostsList() {
     caption: post.caption,
     createdAt: post.createdAt,
     isLiked: post.likes.length > 0,
+    isSaved: post.saves.length > 0,
     likesCount: post._count.likes,
     commentsCount: post._count.comments,
     user: {

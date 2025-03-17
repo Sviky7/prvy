@@ -8,7 +8,31 @@ import { useState } from 'react';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PostCard from '@/app/(private)/prispevok/_components/PostCard';
 
+type PostWithCounts = {
+  id: string;
+  imageUrl: string;
+  caption: string | null;
+  createdAt: Date;
+  likes: { id: string }[];
+  saves: { id: string }[];
+  _count: {
+    likes: number;
+    comments: number;
+  };
+  author: {
+    id: string;
+    name: string | null;
+    image: string | null;
+  };
+};
+
 interface Profile {
+  id: string;
+  userId: string;
+  bio: string | null;
+  avatarUrl: string | null;
+  location: string | null;
+  interests: string[];
   user: {
     id: string;
     name: string | null;
@@ -16,26 +40,30 @@ interface Profile {
     isFollowing: boolean;
     followersCount: number;
     followingCount: number;
-    posts: {
-      id: string;
-      createdAt: Date;
-      imageUrl: string;
-      caption: string | null;
-      isLiked: boolean;
-      likesCount: number;
-      commentsCount: number;
-    }[];
+    posts: PostWithCounts[];
   };
-  id: string;
-  bio: string | null;
-  avatarUrl: string | null;
-  location: string | null;
 }
 
 interface ProfileContentProps {
   profile: Profile;
   isOwnProfile: boolean;
 }
+
+type Post = {
+  id: string;
+  imageUrl: string;
+  caption: string | null;
+  createdAt: Date;
+  isLiked: boolean;
+  isSaved: boolean;
+  likesCount: number;
+  commentsCount: number;
+  user: {
+    id: string;
+    name: string;
+    avatarUrl: string;
+  };
+};
 
 function EditProfileButton({ profile }: { profile: Profile }) {
   const [open, setOpen] = useState(false);
@@ -183,7 +211,23 @@ function FollowButton({ profile, isFollowing }: { profile: Profile; isFollowing:
   );
 }
 
-export default function ProfileContent({ profile, isOwnProfile }: ProfileContentProps) {
+export default function ProfileContent({ profile, isOwnProfile, savedPosts }: ProfileContentProps & { savedPosts?: Post[] }) {
+  const postsToDisplay = savedPosts ? savedPosts : profile.user.posts.map((post: PostWithCounts) => ({
+    id: post.id,
+    imageUrl: post.imageUrl,
+    caption: post.caption,
+    createdAt: post.createdAt,
+    isLiked: post.likes.length > 0,
+    isSaved: post.saves.length > 0,
+    likesCount: post._count.likes,
+    commentsCount: post._count.comments,
+    user: {
+      id: post.author.id,
+      name: post.author.name || '',
+      avatarUrl: post.author.image || '',
+    }
+  }));
+
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
       <Paper sx={{ p: 3, position: 'relative' }}>
@@ -226,18 +270,19 @@ export default function ProfileContent({ profile, isOwnProfile }: ProfileContent
           </Box>
         </Box>
         <Grid container spacing={2}>
-          {profile.user.posts.map((post) => (
-            <Grid item xs={12} key={post.id}>
-              <PostCard post={{ 
-                ...post, 
-                user: { 
-                  id: profile.user.id, 
-                  name: profile.user.name || '', 
-                  avatarUrl: profile.avatarUrl || '' 
-                } 
-              }} />
+          {postsToDisplay.length > 0 ? (
+            postsToDisplay.map((post) => (
+              <Grid item xs={12} key={post.id}>
+                <PostCard post={post} />
+              </Grid>
+            ))
+          ) : (
+            <Grid item xs={12}>
+              <Typography variant="body1" textAlign="center" sx={{ py: 4 }}>
+                Zatiaľ nemáte žiadne uložené príspevky.
+              </Typography>
             </Grid>
-          ))}
+          )}
         </Grid>
       </Paper>
     </Container>

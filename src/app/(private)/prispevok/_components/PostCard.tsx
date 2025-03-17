@@ -18,6 +18,8 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import { useSession } from "next-auth/react";
 
 type Post = {
@@ -26,6 +28,7 @@ type Post = {
   caption: string | null;
   createdAt: Date;
   isLiked: boolean;
+  isSaved: boolean;
   likesCount: number;
   commentsCount: number;
   user: {
@@ -54,6 +57,7 @@ interface PostProps {
 const PostCard: React.FC<PostProps> = ({ post }) => {
   const { data: session } = useSession();
   const [isLiked, setIsLiked] = useState(post.isLiked || false);
+  const [isSaved, setIsSaved] = useState(post.isSaved || false);
   const [likesCount, setLikesCount] = useState(post.likesCount || 0);
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -137,6 +141,22 @@ const PostCard: React.FC<PostProps> = ({ post }) => {
     }
   };
 
+  const handleSaveClick = async () => {
+    if (!session?.user?.id) return;
+
+    try {
+      const response = await fetch(`/api/posts/${post.id}/save`, {
+        method: isSaved ? "DELETE" : "POST",
+      });
+
+      if (response.ok || (response.status === 400 && !isSaved)) {
+        setIsSaved(!isSaved);
+      }
+    } catch (error) {
+      console.error("Error toggling save:", error);
+    }
+  };
+
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleString('sk-SK', {
       year: 'numeric',
@@ -171,22 +191,30 @@ const PostCard: React.FC<PostProps> = ({ post }) => {
           backgroundColor: "#f5f5f5"
         }}
       />
-      <CardActions sx={{ px: 2, py: 1 }}>
+      <CardActions sx={{ px: 2, py: 1, display: "flex", justifyContent: "space-between" }}>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <IconButton 
+            onClick={handleLikeClick}
+            sx={{ color: isLiked ? "error.main" : undefined }}
+          >
+            {isLiked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+          </IconButton>
+          <Typography variant="body2" sx={{ mr: 2 }}>
+            {likesCount} {likesCount === 1 ? "like" : "likes"}
+          </Typography>
+          <IconButton onClick={loadComments}>
+            <ChatBubbleOutlineIcon />
+          </IconButton>
+          <Typography variant="body2">
+            {commentsCount} {commentsCount === 1 ? "komentár" : "komentáre"}
+          </Typography>
+        </Box>
         <IconButton 
-          onClick={handleLikeClick}
-          sx={{ color: isLiked ? "error.main" : undefined }}
+          onClick={handleSaveClick}
+          sx={{ color: isSaved ? "primary.main" : undefined }}
         >
-          {isLiked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+          {isSaved ? <BookmarkIcon /> : <BookmarkBorderIcon />}
         </IconButton>
-        <Typography variant="body2" sx={{ mr: 2 }}>
-          {likesCount} {likesCount === 1 ? "like" : "likes"}
-        </Typography>
-        <IconButton onClick={loadComments}>
-          <ChatBubbleOutlineIcon />
-        </IconButton>
-        <Typography variant="body2">
-          {commentsCount} {commentsCount === 1 ? "komentár" : "komentáre"}
-        </Typography>
       </CardActions>
       <CardContent sx={{ pt: 0 }}>
         {post.caption && (

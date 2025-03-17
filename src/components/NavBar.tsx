@@ -9,8 +9,6 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
-  // useMediaQuery,
-  // Theme,
   Typography,
   Divider,
 } from "@mui/material";
@@ -22,6 +20,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import SearchIcon from "@mui/icons-material/Search";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
@@ -147,6 +146,10 @@ export default function NavBar() {
         <MenuItem component={Link} href={`/profil/${session?.user?.id}`} onClick={() => setAnchorEl(null)}>
           <ListItemIcon><PersonIcon fontSize="small" /></ListItemIcon>
           <ListItemText>Profil</ListItemText>
+        </MenuItem>
+        <MenuItem component={Link} href="/ulozene" onClick={() => setAnchorEl(null)}>
+          <ListItemIcon><BookmarkIcon fontSize="small" /></ListItemIcon>
+          <ListItemText>Uložené</ListItemText>
         </MenuItem>
         <MenuItem onClick={toggleTheme}>
           <ListItemIcon>

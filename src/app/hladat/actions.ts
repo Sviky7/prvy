@@ -2,6 +2,41 @@ import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/authOptions";
 
+
+interface ProfileResponse {
+    id: string;
+    userId: string;
+    bio: string | null;
+    avatarUrl: string | null;
+    location: string | null;
+    interests: string[];
+    user: {
+        id: string;
+        name: string | null;
+        email: string;
+        isFollowing: boolean;
+        followersCount: number;
+        followingCount: number;
+        posts: {
+            id: string;
+            imageUrl: string;
+            caption: string | null;
+            createdAt: Date;
+            likes: { id: string }[];
+            saves: { id: string }[];
+            _count: {
+                likes: number;
+                comments: number;
+            };
+            author: {
+                id: string;
+                name: string | null;
+                image: string | null;
+            };
+        }[];
+    };
+}
+
 export async function searchProfiles(query: string | null) {
     try {
         const session = await getServerSession(authOptions);
@@ -52,7 +87,7 @@ export async function searchProfiles(query: string | null) {
     }
 }
 
-export async function getProfile(id: string) {
+export async function getProfile(id: string): Promise<ProfileResponse> {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
         throw new Error('Not authenticated');
@@ -60,11 +95,7 @@ export async function getProfile(id: string) {
 
     const profile = await prisma.profile.findUnique({
         where: { userId: id },
-        select: {
-            id: true,
-            avatarUrl: true,
-            bio: true,
-            location: true,
+        include: {
             user: {
                 select: {
                     id: true,
@@ -79,8 +110,7 @@ export async function getProfile(id: string) {
                     followers: {
                         where: {
                             followerId: session.user.id
-                        },
-                        take: 1
+                        }
                     },
                     posts: {
                         select: {
@@ -97,10 +127,18 @@ export async function getProfile(id: string) {
                             likes: {
                                 where: {
                                     userId: session.user.id
-                                },
-                                take: 1,
+                                }
+                            },
+                            saves: {
+                                where: {
+                                    userId: session.user.id
+                                }
+                            },
+                            user: {
                                 select: {
-                                    id: true
+                                    id: true,
+                                    name: true,
+                                    image: true
                                 }
                             }
                         },
@@ -117,26 +155,51 @@ export async function getProfile(id: string) {
         throw new Error('Profile not found');
     }
 
-    // Transform the posts to include isLiked and counts
-    const transformedProfile = {
-        ...profile,
+    // Transform the data to match the expected interface
+    return {
+        id: profile.id,
+        userId: profile.userId,
+        bio: profile.bio,
+        avatarUrl: profile.avatarUrl,
+        location: profile.location,
+        interests: profile.interests,
         user: {
-            ...profile.user,
+            id: profile.user.id,
+            name: profile.user.name,
+            email: profile.user.email,
             isFollowing: profile.user.followers.length > 0,
             followersCount: profile.user._count.followers,
             followingCount: profile.user._count.following,
             posts: profile.user.posts.map(post => ({
-                ...post,
-                isLiked: post.likes.length > 0,
-                likesCount: post._count.likes,
-                commentsCount: post._count.comments,
-                likes: undefined,
-                _count: undefined
-            })),
-            followers: undefined,
-            _count: undefined
+                id: post.id,
+                imageUrl: post.imageUrl,
+                caption: post.caption,
+                createdAt: post.createdAt,
+                likes: post.likes,
+                saves: post.saves,
+                _count: post._count,
+                author: post.user
+            }))
         }
     };
+}
 
-    return transformedProfile;
+export async function getSavedPosts() {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts/saved`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch saved posts');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching saved posts:', error);
+    return [];
+  }
 }

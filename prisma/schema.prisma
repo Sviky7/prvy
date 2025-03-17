@@ -87,6 +87,7 @@ model User {
   comments      Comment[]
   followers     Follows[]       @relation("following")
   following     Follows[]       @relation("follower")
+  saves         SavedPost[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -103,6 +104,7 @@ model Post {
   user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   likes    Like[]
   comments Comment[]
+  saves    SavedPost[]
 }
 
 model Like {
@@ -150,4 +152,16 @@ model Follows {
   createdAt   DateTime @default(now())
 
   @@id([followerId, followingId])
+}
+
+model SavedPost {
+  id        String   @id @default(cuid())
+  postId    String
+  userId    String
+  createdAt DateTime @default(now())
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
 }

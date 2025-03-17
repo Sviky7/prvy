@@ -1,5 +1,5 @@
 // src/app/profil/[id]/page.tsx
-import { getProfile } from "@/app/hladat/actions";
+import { getProfile, getSavedPosts } from "@/app/hladat/actions";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 import { Container, Paper, Typography } from "@mui/material";
@@ -8,40 +8,60 @@ import ProfileContent from './ProfileContent';
 export const metadata = { title: "Detail profilu | ZoškaSnap" };
 
 interface Profile {
-  user: {
     id: string;
-    name: string | null;
-    email: string;
-    isFollowing: boolean;
-    followersCount: number;
-    followingCount: number;
-    posts: {
-      id: string;
-      createdAt: Date;
-      imageUrl: string;
-      caption: string | null;
-      isLiked: boolean;
-      likesCount: number;
-      commentsCount: number;
-    }[];
-  };
-  id: string;
-  bio: string | null;
-  avatarUrl: string | null;
-  location: string | null;
+    userId: string;
+    bio: string | null;
+    avatarUrl: string | null;
+    location: string | null;
+    interests: string[];
+    user: {
+        id: string;
+        name: string | null;
+        email: string;
+        isFollowing: boolean;
+        followersCount: number;
+        followingCount: number;
+        posts: {
+            id: string;
+            imageUrl: string;
+            caption: string | null;
+            createdAt: Date;
+            likes: { id: string }[];
+            saves: { id: string }[];
+            _count: {
+                likes: number;
+                comments: number;
+            };
+            author: {
+                id: string;
+                name: string | null;
+                image: string | null;
+            };
+        }[];
+    };
 }
 
 export default async function ProfileDetail({
   params,
+  searchParams,
 }: {
   params: { id: string };
+  searchParams?: { view?: string };
 }) {
   try {
     const profile = await getProfile(params.id) as Profile;
     const session = await getServerSession(authOptions);
     const isOwnProfile = session?.user?.id === params.id;
+    const view = searchParams?.view;
 
-    return <ProfileContent profile={profile} isOwnProfile={isOwnProfile} />;
+    // If view is 'saved', we'll pass the saved posts data
+    const savedPosts = view === 'saved' ? await getSavedPosts() : undefined;
+
+    return <ProfileContent 
+      profile={profile} 
+      isOwnProfile={isOwnProfile} 
+      savedPosts={savedPosts}
+    />;
   } catch (error) {
     return (
       <Container maxWidth="md" sx={{ mt: 4 }}>
